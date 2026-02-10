@@ -135,7 +135,7 @@ textarea{min-height:70px;resize:none}
 
 <script>
 // ===== CONFIG =====
-const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbxs3Oxx62PI1nLibXHvPfBYVQgOCA4YAz1N7Y98pCa2OagVutHg7afIrj5F1MJHFu_Y/exec';
+const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbx092Vf9R5gOzqLJ-PqNeszFNF9a-mDlVUgdeyv50eTel_VZv25qCtt4xEc_hy9llEN/exec';
 
 
 // ===== HISTORY LOAD =====
@@ -193,12 +193,26 @@ function renderHistory(data) {
 }
 
 // ===== SAVE FORM =====
-function saveForm(formData) {
-  fetch(SHEET_API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(formData)
-  })
+function saveData() {
+  const data = {
+    date: document.getElementById('date').value,
+    name: document.getElementById('name').value,
+    plate: document.getElementById('plate').value,
+    phone: document.getElementById('phone').value,
+    brand: document.getElementById('brand').value,
+    model: document.getElementById('model').value,
+    year: document.getElementById('year').value,
+    price: getPriceNumber()
+  };
+
+  if (!data.name) {
+    alert('กรุณากรอกชื่อลูกค้า');
+    return;
+  }
+
+  const params = new URLSearchParams(data).toString();
+
+  fetch(`${SHEET_API_URL}?${params}`)
     .then(res => res.json())
     .then(res => {
       if (res.status === 'success') {
@@ -206,10 +220,15 @@ function saveForm(formData) {
         loadHistory();
       } else {
         alert('บันทึกไม่สำเร็จ');
+        console.error(res);
       }
     })
-    .catch(() => alert('เชื่อมต่อไม่สำเร็จ'));
+    .catch(err => {
+      alert('เชื่อมต่อไม่สำเร็จ');
+      console.error(err);
+    });
 }
+
 
 // ===== UTIL =====
 function formatMoney(val) {
@@ -299,5 +318,6 @@ brandSelect.addEventListener('change',()=>{
 </script>
 </body>
 </html>
+
 
 
