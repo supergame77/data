@@ -167,81 +167,8 @@ fetch(url)
 // ===== RENDER HISTORY =====
 function renderHistory(data) {
   const list = document.getElementById('historyList');
-  list.innerHTML = '';
-  
-if (!data || data.length === 0) {
-  list.innerHTML = '<div style="text-align:center;padding:40px;color:#888;">ยังไม่มีประวัติบันทึกข้อมูล</div>';
-  return;
+  list.innerHTML = 'test';
 }
-
-  data.forEach(item => {
-    const div = document.createElement('div');
-    div.className = 'history-item';
-    div.style.border = '1px solid #ddd';
-    div.style.borderRadius = '8px';
-    div.style.padding = '12px';
-    div.style.marginBottom = '10px';
-
-    div.innerHTML = `
-      <div><b>${item.name || '-'}</b></div>
-      <div>ทะเบียน: ${item.plate || '-'}</div>
-      <div>เบอร์: ${item.phone || '-'}</div>
-      <div>รถ: ${item.brand || '-'} ${item.model || ''}</div>
-      <div>ยอดรวม: ${formatMoney(item.price)} บาท</div>
-    
-   ${item.carImg ? 
-        `<img src="${item.carImg.replace('/view?usp=drivesdk','/uc?export=view')}" 
-        style="width:100%;max-width:160px;border-radius:10px;margin-top:8px">` 
-      : ''}
-
- ${item.billImg ? 
-        `<button onclick="window.open('${item.billImg}')"
-        style="margin-top:6px;padding:6px 10px;border:none;border-radius:8px;background:#e53935;color:white">
-        ดูบิล
-        </button>` 
-      : ''}
-
-        <div style="margin-top:8px;">
-        <button onclick="editItem('${item.id}')">แก้ไข</button>
-        <button onclick="deleteItem('${item.id}')">ลบ</button>
-      </div>
-    `;    
-    
-    list.appendChild(div);
-  });
-} 
-
-function editItem(id){
-  fetch(`${SHEET_API_URL}?id=${id}`)
-  .then(res=>res.json())
-  .then(res=>{
-    const item = res.data.find(d=>d.id===id);
-    if(!item) return;
-
-    document.getElementById('date').value = item.date;
-    document.getElementById('name').value = item.name;
-    document.getElementById('plate').value = item.plate;
-    document.getElementById('phone').value = item.phone;
-    document.getElementById('brand').value = item.brand;
-    document.getElementById('year').value = item.year;
-    document.getElementById('price').value = item.price;
-
-    window.editingId = id;
-    showTab('form');
-  });
-}
-function deleteItem(id){
-  if(!confirm('ยืนยันการลบ?')) return;
-
-  fetch(`${SHEET_API_URL}?action=delete&id=${id}`)
-  .then(res=>res.json())
-  .then(res=>{
-    if(res.status==='success'){
-      loadHistory();
-    }
-  });  
-}
-
 // ===== SAVE FORM =====
 function saveData() {
 const data = {
@@ -372,6 +299,7 @@ brandSelect.addEventListener('change',()=>{
 </script>
 </body>
 </html>
+
 
 
 
