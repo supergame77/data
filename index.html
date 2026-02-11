@@ -169,11 +169,10 @@ function renderHistory(data) {
   const list = document.getElementById('historyList');
   list.innerHTML = '';
   
-  if (!data || data.length === 0) {
-list.innerHTML = '<div style="text-align:center;padding:40px;color:#888;">ยังไม่มีประวัติบันทึกข้อมูล</div>';
-
-    return;
-  }
+if (!data || data.length === 0) {
+  list.innerHTML = '<div style="text-align:center;padding:40px;color:#888;">ยังไม่มีประวัติบันทึกข้อมูล</div>';
+  return;
+}
 
   data.forEach(item => {
     const div = document.createElement('div');
@@ -373,6 +372,7 @@ brandSelect.addEventListener('change',()=>{
 </script>
 </body>
 </html>
+
 
 
 
