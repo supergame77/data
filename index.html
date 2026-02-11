@@ -170,11 +170,8 @@ function renderHistory(data) {
   list.innerHTML = '';
   
   if (!data || data.length === 0) {
-list.innerHTML = `
-    <div style="text-align:center;padding:40px;color:#888;">
-        ยังไม่มีประวัติบันทึกข้อมูล
-    </div>
-`;
+list.innerHTML = '<div style="text-align:center;padding:40px;color:#888;">ยังไม่มีประวัติบันทึกข้อมูล</div>';
+
     return;
   }
 
@@ -376,6 +373,7 @@ brandSelect.addEventListener('change',()=>{
 </script>
 </body>
 </html>
+
 
 
 
