@@ -148,9 +148,15 @@ function loadHistory(keyword = '') {
     ? `${SHEET_API_URL}?q=${encodeURIComponent(keyword)}`
     : SHEET_API_URL;
 
-  fetch(url)
-    .then(res => res.json())
-    .then(data => renderHistory(data))
+fetch(url)
+  .then(res => res.json())
+  .then(res => {
+    if (res.status === 'success') {
+      renderHistory(res.data);
+    } else {
+      renderHistory([]);
+    }
+  })
     .catch(err => {
       const list = document.getElementById('historyList');
       list.innerHTML = '<div style="padding:20px;color:red">โหลดข้อมูลไม่สำเร็จ</div>';
@@ -195,6 +201,7 @@ function renderHistory(data) {
 // ===== SAVE FORM =====
 function saveData() {
   const data = {
+    mode: 'save',   // 🔥 ต้องมีอันนี้
     date: document.getElementById('date').value,
     name: document.getElementById('name').value,
     plate: document.getElementById('plate').value,
@@ -318,6 +325,7 @@ brandSelect.addEventListener('change',()=>{
 </script>
 </body>
 </html>
+
 
 
 
