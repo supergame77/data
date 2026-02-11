@@ -247,24 +247,24 @@ function renderHistory(data) {
 // ===== SAVE FORM =====
 function saveData() {
 
-  const formData = new FormData();
+  const formData = new URLSearchParams();
 
   const carPreview = document.getElementById('carPreview');
   const billPreview = document.getElementById('billPreview');
-  
-formData.append(
-  "carImg",
-  carPreview.src && carPreview.src.startsWith("data:image")
-    ? carPreview.src
-    : ""
-);
-  
+
+  formData.append(
+    "carImg",
+    carPreview.src && carPreview.src.startsWith("data:image")
+      ? carPreview.src
+      : ""
+  );
+
   formData.append(
     "billImg",
     billPreview.src && billPreview.src.startsWith("data:image")
       ? billPreview.src
       : ""
-  );  
+  );
 
   formData.append("mode", window.editingId ? "update" : "save");
   formData.append("id", window.editingId || "");
@@ -279,7 +279,10 @@ formData.append(
 
   fetch(SHEET_API_URL, {
     method: "POST",
-    body: formData
+    body: formData,
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    }
   })
   .then(res => res.json())
   .then(res => {
@@ -298,6 +301,7 @@ formData.append(
     console.error(err);
   });
 }
+
 
 
 // ===== UTIL =====
@@ -461,6 +465,7 @@ setTimeout(()=>{
 </script>
 </body>
 </html>
+
 
 
 
