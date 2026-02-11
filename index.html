@@ -166,9 +166,84 @@ fetch(url)
 
 // ===== RENDER HISTORY =====
 function renderHistory(data) {
-  const list = document.getElementById('historyList');
-  list.innerHTML = 'test';
+  const list = document.getElementById("historyList");
+
+  // ไม่มีข้อมูล
+  if (!data || data.length === 0) {
+    list.innerHTML =
+      '<div style="text-align:center;padding:40px;color:#888;font-size:16px;">ยังไม่มีประวัติบันทึกข้อมูล</div>';
+    return;
+  }
+
+  let html = "";
+
+  data.forEach(item => {
+    const carImg = item.carImg
+      ? `<img src="${item.carImg}" 
+             style="width:120px;height:90px;object-fit:cover;border-radius:8px;border:1px solid #ddd;">`
+      : `<div style="width:120px;height:90px;background:#f0f0f0;
+                    display:flex;align-items:center;justify-content:center;
+                    border-radius:8px;color:#999;font-size:12px;">
+           ไม่มีรูป
+         </div>`;
+
+    const billButton = item.billImg
+      ? `<button onclick="window.open('${item.billImg}','_blank')" 
+                style="background:#17a2b8;">ดูบิล</button>`
+      : "";
+
+    html += `
+      <div style="
+        display:flex;
+        gap:15px;
+        background:#ffffff;
+        padding:15px;
+        margin-bottom:15px;
+        border-radius:12px;
+        box-shadow:0 3px 8px rgba(0,0,0,0.08);
+        align-items:center;
+      ">
+
+        <div>${carImg}</div>
+
+        <div style="flex:1;">
+          <div style="font-weight:bold;font-size:16px;">
+            ${item.name || '-'}
+          </div>
+
+          <div style="font-size:14px;color:#555;">
+            📅 ${item.date || '-'}
+          </div>
+
+          <div style="font-size:14px;color:#555;">
+            🚗 ${item.brand || ''} ${item.model || ''} (${item.year || ''})
+          </div>
+
+          <div style="font-size:14px;color:#555;">
+            🏷 ทะเบียน: ${item.plate || '-'}
+          </div>
+
+          <div style="font-size:14px;color:#28a745;font-weight:bold;margin-top:4px;">
+            💰 ${item.price || 0} บาท
+          </div>
+
+          <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+            <button onclick="editData('${item.id}')"
+                    style="background:#ffc107;">แก้ไข</button>
+
+            <button onclick="deleteData('${item.id}')"
+                    style="background:#dc3545;color:#fff;">ลบ</button>
+
+            ${billButton}
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  list.innerHTML = html;
 }
+
 // ===== SAVE FORM =====
 function saveData() {
 const data = {
@@ -295,10 +370,37 @@ brandSelect.addEventListener('change',()=>{
   });
 });
 
-// ===== existing functions =====
+// ===== ฟังก์ชันลบ =====
+function deleteData(id) {
+  if (!confirm("ต้องการลบรายการนี้ใช่หรือไม่?")) return;
+
+  fetch(scriptUrl + "?action=delete&id=" + id)
+    .then(res => res.json())
+    .then(() => loadHistory());
+}
+// ===== ฟังก์ชันแก้ไข =====  
+function editData(id) {
+  fetch(scriptUrl)
+    .then(res => res.json())
+    .then(res => {
+      const item = res.data.find(d => d.id === id);
+      if (!item) return;
+
+      document.getElementById("editId").value = item.id;
+      date.value = item.date;
+      name.value = item.name;
+      plate.value = item.plate;
+      phone.value = item.phone;
+      brand.value = item.brand;
+      model.value = item.model;
+      year.value = item.year;
+      price.value = item.price;
+    });
+}  
 </script>
 </body>
 </html>
+
 
 
 
