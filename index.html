@@ -246,43 +246,57 @@ function renderHistory(data) {
 
 // ===== SAVE FORM =====
 function saveData() {
-const data = {
-  mode: window.editingId ? 'update' : 'save',
-  id: window.editingId || '',
-  date: document.getElementById('date').value,
-  name: document.getElementById('name').value,
-  plate: document.getElementById('plate').value,
-  phone: document.getElementById('phone').value,
-  brand: document.getElementById('brand').value,
-  model: document.getElementById('model').value,
-  year: document.getElementById('year').value,
-  price: getPriceNumber(),
-  carImg: document.getElementById('carPreview').src || '',
-  billImg: document.getElementById('billPreview').src || ''
-};
+
+  const formData = new FormData();
+
+  const carPreview = document.getElementById('carPreview');
+  const billPreview = document.getElementById('billPreview');
   
-  if (!data.name) {
-    alert('กรุณากรอกชื่อลูกค้า');
-    return;
-  }
+formData.append(
+  "carImg",
+  carPreview.src && carPreview.src.startsWith("data:image")
+    ? carPreview.src
+    : ""
+);
+  
+  formData.append(
+    "billImg",
+    billPreview.src && billPreview.src.startsWith("data:image")
+      ? billPreview.src
+      : ""
+  );  
 
-  const params = new URLSearchParams(data).toString();
+  formData.append("mode", window.editingId ? "update" : "save");
+  formData.append("id", window.editingId || "");
+  formData.append("date", document.getElementById('date').value);
+  formData.append("name", document.getElementById('name').value);
+  formData.append("plate", document.getElementById('plate').value);
+  formData.append("phone", document.getElementById('phone').value);
+  formData.append("brand", document.getElementById('brand').value);
+  formData.append("model", document.getElementById('model').value);
+  formData.append("year", document.getElementById('year').value);
+  formData.append("price", getPriceNumber());
 
-  fetch(`${SHEET_API_URL}?${params}`)
-    .then(res => res.json())
-    .then(res => {
-      if (res.status === 'success') {
-        alert('บันทึกเรียบร้อย');
-        loadHistory();
-      } else {
-        alert('บันทึกไม่สำเร็จ');
-        console.error(res);
-      }
-    })
-    .catch(err => {
-      alert('เชื่อมต่อไม่สำเร็จ');
-      console.error(err);
-    });
+  fetch(SHEET_API_URL, {
+    method: "POST",
+    body: formData
+  })
+  .then(res => res.json())
+  .then(res => {
+    if (res.status === "success") {
+      alert("บันทึกเรียบร้อย");
+      window.editingId = null;
+      loadHistory();
+      showTab('history');
+    } else {
+      alert("บันทึกไม่สำเร็จ");
+      console.log(res);
+    }
+  })
+  .catch(err => {
+    alert("เชื่อมต่อไม่สำเร็จ");
+    console.error(err);
+  });
 }
 
 
@@ -372,34 +386,54 @@ brandSelect.addEventListener('change',()=>{
 
 // ===== ฟังก์ชันลบ =====
 function deleteData(id) {
-  if (!confirm("ต้องการลบรายการนี้ใช่หรือไม่?")) return;
+  if (!confirm("ยืนยันการลบ?")) return;
 
-  fetch(scriptUrl + "?action=delete&id=" + id)
+  fetch(SHEET_API_URL + "?action=delete&id=" + id)
     .then(res => res.json())
-    .then(() => loadHistory());
+    .then(res => {
+      if (res.status === "success") {
+        loadHistory();
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      alert("ลบไม่สำเร็จ");
+    });
 }
 // ===== ฟังก์ชันแก้ไข =====  
 function editData(id) {
-  fetch(scriptUrl)
+  fetch(SHEET_API_URL)
     .then(res => res.json())
     .then(res => {
+      if (!res.data) return;
       const item = res.data.find(d => d.id === id);
       if (!item) return;
 
-      document.getElementById("editId").value = item.id;
-      date.value = item.date;
-      name.value = item.name;
-      plate.value = item.plate;
-      phone.value = item.phone;
-      brand.value = item.brand;
-      model.value = item.model;
-      year.value = item.year;
-      price.value = item.price;
+      document.getElementById('date').value = item.date;
+      document.getElementById('name').value = item.name;
+      document.getElementById('plate').value = item.plate;
+      document.getElementById('phone').value = item.phone;
+      document.getElementById('brand').value = item.brand;
+
+// trigger change เพื่อโหลดรุ่น
+brandSelect.dispatchEvent(new Event('change'));
+
+setTimeout(()=>{
+  document.getElementById('model').value = item.model;
+}, 100);
+      
+      document.getElementById('year').value = item.year;
+      document.getElementById('price').value = item.price;
+
+      window.editingId = id;
+
+      showTab('form');
     });
-}  
+}
 </script>
 </body>
 </html>
+
 
 
 
