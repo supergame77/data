@@ -135,7 +135,7 @@ textarea{min-height:70px;resize:none}
 
 <script>
 // ===== CONFIG =====
-const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwpqOhrZ2PvZW1pLanUiGkRSQZyaQv3I_beWVldom_z85H53IB1z7IrqLWpToU1IeFq/exec';
+const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbyKtCWm38y8LCOcElu1yYTovnBlYjqTXwgtD4amzjF_m9iUMq9bRMH6Dyiyv94kCZ4G/exec';
 
 
 // ===== HISTORY LOAD =====
@@ -168,9 +168,6 @@ fetch(url)
 function renderHistory(data) {
   const list = document.getElementById('historyList');
   list.innerHTML = '';
-
-<button onclick="deleteItem('${item.id}')">ลบ</button>
-<button onclick='editItem(${JSON.stringify(item)})'>แก้ไข</button>  
   
   if (!data || data.length === 0) {
     list.innerHTML = `
@@ -195,37 +192,48 @@ function renderHistory(data) {
       <div>เบอร์: ${item.phone || '-'}</div>
       <div>รถ: ${item.brand || '-'} ${item.model || ''}</div>
       <div>ยอดรวม: ${formatMoney(item.price)} บาท</div>
-    `;
     
-${item.carImg ? 
-  `<img src="${item.carImg.replace('/view?usp=drivesdk','/uc?export=view')}" 
-    style="width:100%;max-width:160px;border-radius:10px;margin-top:8px">` 
-  : ''}
+   ${item.carImg ? 
+        `<img src="${item.carImg.replace('/view?usp=drivesdk','/uc?export=view')}" 
+        style="width:100%;max-width:160px;border-radius:10px;margin-top:8px">` 
+      : ''}
 
-${item.billImg ? 
-  `<button onclick="window.open('${item.billImg}')"
-   style="margin-top:6px;padding:6px 10px;border:none;border-radius:8px;background:#e53935;color:white">
-   ดูบิล
-   </button>` 
-  : ''}
+ ${item.billImg ? 
+        `<button onclick="window.open('${item.billImg}')"
+        style="margin-top:6px;padding:6px 10px;border:none;border-radius:8px;background:#e53935;color:white">
+        ดูบิล
+        </button>` 
+      : ''}
+
+        <div style="margin-top:8px;">
+        <button onclick="editItem('${item.id}')">แก้ไข</button>
+        <button onclick="deleteItem('${item.id}')">ลบ</button>
+      </div>
+    `;    
     
     list.appendChild(div);
   });
+} 
 
-function editItem(item){
-  document.getElementById('date').value = item.date;
-  document.getElementById('name').value = item.name;
-  document.getElementById('plate').value = item.plate;
-  document.getElementById('phone').value = item.phone;
-  document.getElementById('brand').value = item.brand;
-  document.getElementById('model').value = item.model;
-  document.getElementById('year').value = item.year;
-  document.getElementById('price').value = item.price;
+function editItem(id){
+  fetch(`${SHEET_API_URL}?id=${id}`)
+  .then(res=>res.json())
+  .then(res=>{
+    const item = res.data.find(d=>d.id===id);
+    if(!item) return;
 
-  window.editingId = item.id;
-  showTab('form');
+    document.getElementById('date').value = item.date;
+    document.getElementById('name').value = item.name;
+    document.getElementById('plate').value = item.plate;
+    document.getElementById('phone').value = item.phone;
+    document.getElementById('brand').value = item.brand;
+    document.getElementById('year').value = item.year;
+    document.getElementById('price').value = item.price;
+
+    window.editingId = id;
+    showTab('form');
+  });
 }
-
 function deleteItem(id){
   if(!confirm('ยืนยันการลบ?')) return;
 
@@ -240,20 +248,20 @@ function deleteItem(id){
 
 // ===== SAVE FORM =====
 function saveData() {
-  const data = {
-    mode: 'save',   // 🔥 ต้องมีอันนี้
-    date: document.getElementById('date').value,
-    name: document.getElementById('name').value,
-    plate: document.getElementById('plate').value,
-    phone: document.getElementById('phone').value,
-    brand: document.getElementById('brand').value,
-    model: document.getElementById('model').value,
-    year: document.getElementById('year').value,
-    price: getPriceNumber()
-  };
-  
-data.carImg = document.getElementById('carPreview').src || '';
-data.billImg = document.getElementById('billPreview').src || '';
+const data = {
+  mode: window.editingId ? 'update' : 'save',
+  id: window.editingId || '',
+  date: document.getElementById('date').value,
+  name: document.getElementById('name').value,
+  plate: document.getElementById('plate').value,
+  phone: document.getElementById('phone').value,
+  brand: document.getElementById('brand').value,
+  model: document.getElementById('model').value,
+  year: document.getElementById('year').value,
+  price: getPriceNumber(),
+  carImg: document.getElementById('carPreview').src || '',
+  billImg: document.getElementById('billPreview').src || ''
+};
   
   if (!data.name) {
     alert('กรุณากรอกชื่อลูกค้า');
@@ -368,6 +376,7 @@ brandSelect.addEventListener('change',()=>{
 </script>
 </body>
 </html>
+
 
 
 
