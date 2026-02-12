@@ -135,7 +135,7 @@ textarea{min-height:70px;resize:none}
 
 <script>
 // ===== CONFIG =====
-const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwcw_lNUq2y8X04VhIH93cJoUs0EFIqKf0aviL2sxzQnEr9hdiYLQU0aYskF-A2hIyy/exec';
+const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbyryusTwIGbOhoSp2NcGnjXvqLcyqrDW5ox9CoUKe6DtS7mPC2ptjaEHWX37gMoRxEj/exec';
 
 
 // ===== HISTORY LOAD =====
@@ -248,50 +248,26 @@ function renderHistory(data) {
 function saveData() {
 
   const params = new URLSearchParams();
-  const carPreview = document.getElementById('carPreview');
-  const billPreview = document.getElementById('billPreview');
 
-  params.append("mode", window.editingId ? "update" : "save");
-  params.append("id", window.editingId || "");
-  params.append("date", document.getElementById('date').value);
+  params.append("mode", "save");
   params.append("name", document.getElementById('name').value);
   params.append("plate", document.getElementById('plate').value);
-  params.append("phone", document.getElementById('phone').value);
-  params.append("brand", document.getElementById('brand').value);
-  params.append("model", document.getElementById('model').value);
-  params.append("year", document.getElementById('year').value);
-  params.append("price", getPriceNumber());
+  params.append("callback", "handleResponse");
 
-  if (carPreview && carPreview.src.startsWith("data:image")) {
-    params.append("carImg", carPreview.src);
-  }
+  const script = document.createElement("script");
+  script.src = SHEET_API_URL + "?" + params.toString();
 
-  if (billPreview && billPreview.src.startsWith("data:image")) {
-    params.append("billImg", billPreview.src);
-  }
-
-  fetch(SHEET_API_URL, {
-    method: "POST",
-    body: params
-  })
-  .then(response => response.json())
-  .then(result => {
-    if (result.status === "success") {
-      alert("บันทึกเรียบร้อย");
-      window.editingId = null;
-      loadHistory();
-      showTab('history');
-    } else {
-      alert("บันทึกไม่สำเร็จ");
-      console.log(result);
-    }
-  })
-  .catch(error => {
-    alert("เชื่อมต่อไม่สำเร็จ");
-    console.error(error);
-  });
-
+  document.body.appendChild(script);
 }
+
+function handleResponse(res) {
+  if (res.status === "success") {
+    alert("บันทึกเรียบร้อย");
+  } else {
+    alert("เกิดข้อผิดพลาด");
+  }
+}
+
 
 
 
@@ -456,6 +432,7 @@ setTimeout(()=>{
 </script>
 </body>
 </html>
+
 
 
 
