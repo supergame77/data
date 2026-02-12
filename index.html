@@ -139,30 +139,39 @@ const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbyryusTwIGbOhoSp2
 
 
 // ===== HISTORY LOAD =====
-document.addEventListener('DOMContentLoaded', () => {
-  loadHistory();
-});
+function loadHistory() {
 
-function loadHistory(keyword = '') {
-  const url = keyword
-    ? `${SHEET_API_URL}?q=${encodeURIComponent(keyword)}`
-    : SHEET_API_URL;
+  const params = new URLSearchParams();
+  params.append("mode", "load");
+  params.append("callback", "handleLoad");
 
-fetch(url)
-  .then(res => res.json())
-  .then(res => {
-    if (res.status === 'success') {
-      renderHistory(res.data);
-    } else {
-      renderHistory([]);
-    }
-  })
-    .catch(err => {
-      const list = document.getElementById('historyList');
-      list.innerHTML = '<div style="padding:20px;color:red">โหลดข้อมูลไม่สำเร็จ</div>';
-      console.error(err);
-    });
+  const script = document.createElement("script");
+  script.src = SHEET_API_URL + "?" + params.toString();
+
+  document.body.appendChild(script);
 }
+
+function handleLoad(res) {
+
+  if (res.status !== "success") {
+    alert("โหลดไม่สำเร็จ");
+    return;
+  }
+
+  const container = document.getElementById("historyList");
+  container.innerHTML = "";
+
+  res.data.forEach(item => {
+    const div = document.createElement("div");
+    div.innerHTML = `
+      <div>
+        <strong>${item.name}</strong> - ${item.plate}
+      </div>
+    `;
+    container.appendChild(div);
+  });
+}
+
 
 // ===== RENDER HISTORY =====
 function renderHistory(data) {
@@ -432,6 +441,7 @@ setTimeout(()=>{
 </script>
 </body>
 </html>
+
 
 
 
