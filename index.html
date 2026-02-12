@@ -135,20 +135,25 @@ textarea{min-height:70px;resize:none}
 
 <script>
 // ===== CONFIG =====
-const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbyd2XuCC0JC4fy-Rq5StGb_VJysZyGaMQsO5KIuK4sQUF_LtrL7eBXl2wSP2ijnN9JO/exec';
+const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbxdQKWm4wUN1lt6Do3h3WuWgl5fxIt1nptHRotXo2BhdLoOGyKHrGm5x4DT3umzOrno/exec';
 
 
 // ===== HISTORY LOAD =====
 function loadHistory() {
 
-  const params = new URLSearchParams();
-  params.append("mode", "load");
-  params.append("callback", "handleLoad");
-
-  const script = document.createElement("script");
-  script.src = SHEET_API_URL + "?" + params.toString();
-
-  document.body.appendChild(script);
+  fetch(SHEET_API_URL + "?mode=load")
+    .then(res => res.json())
+    .then(res => {
+      if (res.status === "success") {
+        renderHistory(res.data);
+      } else {
+        alert("โหลดไม่สำเร็จ");
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      alert("โหลดผิดพลาด");
+    });
 }
 
 function handleLoad(res) {
@@ -256,25 +261,39 @@ function renderHistory(data) {
 // ===== SAVE FORM =====
 function saveData() {
 
-  const params = new URLSearchParams();
+  const formData = new FormData();
 
-  params.append("mode", "save");
-  params.append("name", document.getElementById('name').value);
-  params.append("plate", document.getElementById('plate').value);
-  params.append("callback", "handleResponse");
+  formData.append("mode", "save");
+  formData.append("name", document.getElementById('name').value);
+  formData.append("date", document.getElementById('date').value);
+  formData.append("plate", document.getElementById('plate').value);
+  formData.append("phone", document.getElementById('phone').value);
+  formData.append("brand", document.getElementById('brand').value);
+  formData.append("model", document.getElementById('model').value);
+  formData.append("year", document.getElementById('year').value);
+  formData.append("price", getPriceNumber());
 
-  const script = document.createElement("script");
-  script.src = SHEET_API_URL + "?" + params.toString();
+  // 👇 ดึง base64 จาก preview
+  formData.append("carImg", document.getElementById('carPreview').src);
+  formData.append("billImg", document.getElementById('billPreview').src);
 
-  document.body.appendChild(script);
-}
-
-function handleResponse(res) {
-  if (res.status === "success") {
-    alert("บันทึกเรียบร้อย");
-  } else {
-    alert("เกิดข้อผิดพลาด");
-  }
+  fetch(SHEET_API_URL, {
+    method: "POST",
+    body: formData
+  })
+  .then(res => res.json())
+  .then(res => {
+    if (res.status === "success") {
+      alert("บันทึกเรียบร้อย");
+      loadHistory();
+    } else {
+      alert("เกิดข้อผิดพลาด");
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    alert("บันทึกไม่สำเร็จ");
+  });
 }
 
 
@@ -441,6 +460,7 @@ setTimeout(()=>{
 </script>
 </body>
 </html>
+
 
 
 
