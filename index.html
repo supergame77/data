@@ -247,61 +247,49 @@ function renderHistory(data) {
 // ===== SAVE FORM =====
 function saveData() {
 
-  const formData = new URLSearchParams();
+  const params = new URLSearchParams();
 
   const carPreview = document.getElementById('carPreview');
   const billPreview = document.getElementById('billPreview');
 
-  formData.append(
-    "carImg",
-    carPreview.src && carPreview.src.startsWith("data:image")
-      ? carPreview.src
-      : ""
-  );
+  params.append("mode", window.editingId ? "update" : "save");
+  params.append("id", window.editingId || "");
+  params.append("date", document.getElementById('date').value);
+  params.append("name", document.getElementById('name').value);
+  params.append("plate", document.getElementById('plate').value);
+  params.append("phone", document.getElementById('phone').value);
+  params.append("brand", document.getElementById('brand').value);
+  params.append("model", document.getElementById('model').value);
+  params.append("year", document.getElementById('year').value);
+  params.append("price", getPriceNumber());
 
-  formData.append(
-    "billImg",
-    billPreview.src && billPreview.src.startsWith("data:image")
-      ? billPreview.src
-      : ""
-  );
+  // รูป (เฉพาะที่เป็น base64)
+  if (carPreview.src && carPreview.src.startsWith("data:image")) {
+    params.append("carImg", carPreview.src);
+  }
 
-  formData.append("mode", window.editingId ? "update" : "save");
-  formData.append("id", window.editingId || "");
-  formData.append("date", document.getElementById('date').value);
-  formData.append("name", document.getElementById('name').value);
-  formData.append("plate", document.getElementById('plate').value);
-  formData.append("phone", document.getElementById('phone').value);
-  formData.append("brand", document.getElementById('brand').value);
-  formData.append("model", document.getElementById('model').value);
-  formData.append("year", document.getElementById('year').value);
-  formData.append("price", getPriceNumber());
+  if (billPreview.src && billPreview.src.startsWith("data:image")) {
+    params.append("billImg", billPreview.src);
+  }
 
-  fetch(SHEET_API_URL, {
-    method: "POST",
-    body: formData,
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded"
-    }
-  })
-  .then(res => res.json())
-  .then(res => {
-    if (res.status === "success") {
-      alert("บันทึกเรียบร้อย");
-      window.editingId = null;
-      loadHistory();
-      showTab('history');
-    } else {
-      alert("บันทึกไม่สำเร็จ");
-      console.log(res);
-    }
-  })
-  .catch(err => {
-    alert("เชื่อมต่อไม่สำเร็จ");
-    console.error(err);
-  });
+  fetch(SHEET_API_URL + "?" + params.toString())
+    .then(res => res.json())
+    .then(res => {
+      if (res.status === "success") {
+        alert("บันทึกเรียบร้อย");
+        window.editingId = null;
+        loadHistory();
+        showTab('history');
+      } else {
+        alert("บันทึกไม่สำเร็จ");
+        console.log(res);
+      }
+    })
+    .catch(err => {
+      alert("เชื่อมต่อไม่สำเร็จ");
+      console.error(err);
+    });
 }
-
 
 
 // ===== UTIL =====
@@ -465,6 +453,7 @@ setTimeout(()=>{
 </script>
 </body>
 </html>
+
 
 
 
