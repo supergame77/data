@@ -5,20 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ระบบจัดการอู่</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap');
-
-*{
-  font-family:'Kanit',system-ui,sans-serif !important;
-}
-
+*{font-family:'Kanit',system-ui,sans-serif!important}
 body{margin:0;background:#f5f7fb}
 .container{max-width:420px;margin:auto;padding:16px}
 .tabs{background:#fff;border-radius:14px;display:flex;padding:6px;margin-bottom:16px;position:relative;overflow:hidden}
-.tab{z-index:1;flex:1;text-align:center;padding:10px;border-radius:12px;color:#666;font-size:14px;cursor:pointer;transition:transform .15s ease, color .2s ease;position:relative}
+.tab{z-index:1;flex:1;text-align:center;padding:10px;border-radius:12px;color:#666;font-size:14px;cursor:pointer;position:relative}
 .tab.active{color:#fff;font-weight:600}
 h3{margin:10px 0;color:#e53935;font-size:18px;text-align:center}
 .card{background:#fff;border-radius:18px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
@@ -27,493 +20,155 @@ h3{margin:10px 0;color:#e53935;font-size:18px;text-align:center}
 label{font-size:13px;color:#555}
 input,select,textarea{width:100%;padding:10px;margin-top:4px;border-radius:12px;border:1px solid #ddd;font-size:14px;box-sizing:border-box}
 textarea{min-height:70px;resize:none}
-.upload{border:2px dashed #e53935;border-radius:16px;padding:18px;text-align:center;margin-top:12px;font-weight:500}
-.upload.car{border-color:#2196f3;color:#2196f3;background:#e3f2fd}
-.upload.bill{border-color:#e53935;color:#e53935;background:#fdecea}
-.submit{margin-top:16px;width:100%;background:#2196f3;color:#fff;border:none;border-radius:16px;padding:14px;font-size:16px;font-weight:600;cursor:pointer;transition:transform .12s ease, box-shadow .12s ease}
-
+.submit{margin-top:16px;width:100%;background:#2196f3;color:#fff;border:none;border-radius:16px;padding:14px;font-size:16px;font-weight:600;cursor:pointer}
 .money-wrapper{position:relative}
 .money-wrapper .unit{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:#666;pointer-events:none}
-.tab-indicator{position:absolute;top:6px;bottom:6px;left:6px;width:calc(50% - 6px);background:#e53935;border-radius:12px;transition:transform .25s ease;z-index:0}
-
-.tab:active{transform:scale(.96)}
-.submit:active{transform:scale(.96)}
-.submit:focus{outline:none}
+.tab-indicator{position:absolute;top:6px;bottom:6px;left:6px;width:calc(50% - 6px);background:#e53935;border-radius:12px;transition:.25s;z-index:0}
 </style>
 </head>
 <body>
-  <div class="container">
-    <h2 style="text-align:center;margin:6px 0 14px;color:#2196f3"><i class="bi bi-speedometer2"></i> เกมส์ คอมมอนเรล</h2>
-    <div class="tabs">
-      <div class="tab-indicator" id="tabIndicator"></div>
-      <div class="tab active" id="tabForm"><i class="bi bi-tools"></i> งานซ่อม</div>
-      <div class="tab" id="tabHistory"><i class="bi bi-clock-history"></i> ประวัติ</div>
-    </div>
-      
-
-    <div id="formTab">
-      <h3><i class="bi bi-tools"></i> บันทึกงานซ่อม</h3>
-      <div class="card">
-
-        <div class="row">
-          <div class="field">
-            <label>ชื่อลูกค้า</label>
-            <input id="name" placeholder="เช่น ช่างเอก">
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="field">
-            <label>วันที่</label>
-            <input type="date" id="date">
-          </div>
-          <div class="field">
-            <label>ทะเบียนรถ</label>
-            <input id="plate" placeholder="กข 8888">
-          </div>
-          <div class="field">
-            <label>เบอร์โทร</label>
-            <input id="phone" placeholder="08x-xxx-xxxx">
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="field">
-            <label>ยี่ห้อรถ</label>
-            <select id="brand">
-              <option value="">เลือกยี่ห้อ...</option>
-              <option>Toyota</option><option>Honda</option><option>Isuzu</option>
-              <option>Mitsubishi</option><option>Nissan</option><option>Mazda</option>
-              <option>Ford</option><option>MG</option><option>BYD</option>
-              <option>Suzuki</option><option>BMW</option><option>Mercedes-Benz</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>รุ่นรถ</label>
-            <select id="model">
-              <option value="">เลือกรุ่นรถ</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>ปีรถ</label>
-            <input id="year" placeholder="2019">
-          </div>
-        </div>
-
-        <label>รายละเอียดอาการก่อนซ่อม</label>
-        <textarea></textarea>
-
-        <label>รายละเอียดหลังซ่อมเสร็จแล้ว</label>
-        <textarea></textarea>
-
-        <label>ยอดเงินรวม</label>
-        <div class="money-wrapper">
-          <input id="price" placeholder="0" inputmode="numeric">
-          <span class="unit">บาท</span>
-        </div>
-
-        <div class="upload car" onclick="carImg.click()"><i class="bi bi-camera"></i> ถ่ายรูปงาน / รถลูกค้า
-  <input type="file" id="carImg" accept="image/*" hidden onchange="previewImage(this,'carPreview')">
-  <img id="carPreview" style="display:none;margin-top:10px;max-width:100px;border-radius:8px">
+<div class="container">
+<h2 style="text-align:center;margin:6px 0 14px;color:#2196f3"><i class="bi bi-speedometer2"></i> เกมส์ คอมมอนเรล</h2>
+<div class="tabs">
+<div class="tab-indicator" id="tabIndicator"></div>
+<div class="tab active" id="tabForm">งานซ่อม</div>
+<div class="tab" id="tabHistory">ประวัติ</div>
 </div>
 
-        <div class="upload bill" onclick="billImg.click()"><i class="bi bi-receipt"></i> อัปโหลดรูปบิลเงินสด
-  <input type="file" id="billImg" accept="image/*" hidden onchange="previewImage(this,'billPreview')">
-  <img id="billPreview" style="display:none;margin-top:10px;max-width:100px;border-radius:8px">
+<div id="formTab">
+<h3>บันทึกงานซ่อม</h3>
+<div class="card">
+<label>ชื่อลูกค้า</label>
+<input id="name">
+<label>วันที่</label>
+<input type="date" id="date">
+<label>ทะเบียน</label>
+<input id="plate">
+<label>เบอร์โทร</label>
+<input id="phone">
+<label>ยี่ห้อ</label>
+<input id="brand">
+<label>รุ่น</label>
+<input id="model">
+<label>ปี</label>
+<input id="year">
+<label>ยอดเงิน</label>
+<div class="money-wrapper">
+<input id="price"><span class="unit">บาท</span>
+</div>
+<button class="submit" onclick="saveData()">บันทึกงาน</button>
+</div>
 </div>
 
-        <button class="submit" onclick="saveData()">บันทึกงาน</button>
-      </div>
-    </div>
+<div id="historyTab" style="display:none">
+<h3>ประวัติงาน</h3>
+<div id="historyList"></div>
+</div>
+</div>
 
-    <div id="historyTab" style="display:none">
-      <h3><i class="bi bi-clock-history"></i> ประวัติงานซ่อม</h3>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-      <input id="searchPlate" placeholder="ค้นหาตามทะเบียน" oninput="loadHistory()" style="margin-bottom:12px">
+const firebaseConfig = {
+  apiKey: "AIzaSyCmj37F4VLFX_SkNWwPFR2xODdU7D77eKg",
+  authDomain: "garage-system-c15b6.firebaseapp.com",
+  projectId: "garage-system-c15b6",
+  storageBucket: "garage-system-c15b6.firebasestorage.app",
+  messagingSenderId: "1021919346596",
+  appId: "1:1021919346596:web:ad5915eac27ff5535c8b31"
+};
 
-      <div id="historyList"></div>
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+let editingId = null;
 
-<script>
-// ===== CONFIG =====
-const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbxDVLcdc8a6UZMnNGwhPnbkRQviPK1ZpuNUqYhHk2GHnlsz09F-1U54HYs4hy2Evyk7/exec";
+window.saveData = async function(){
+  const data = {
+    name: name.value,
+    date: date.value,
+    plate: plate.value,
+    phone: phone.value,
+    brand: brand.value,
+    model: model.value,
+    year: year.value,
+    price: price.value,
+    createdAt: new Date()
+  };
 
-
-
-// ===== HISTORY LOAD =====
-function loadHistory() {
-
-  fetch(SHEET_API_URL + "?mode=load")
-    .then(res => res.json())
-    .then(res => {
-      if (res.status === "success") {
-        renderHistory(res.data);
-      } else {
-        alert("โหลดไม่สำเร็จ");
-      }
-    })
-    .catch(err => {
-      console.error(err);
-      alert("โหลดผิดพลาด");
-    });
-}
-
-function handleLoad(res) {
-
-  if (res.status !== "success") {
-    alert("โหลดไม่สำเร็จ");
-    return;
+  if(editingId){
+    await updateDoc(doc(db,"jobs",editingId), data);
+    editingId=null;
+  }else{
+    await addDoc(collection(db,"jobs"), data);
   }
 
-  const container = document.getElementById("historyList");
-  container.innerHTML = "";
-
-  res.data.forEach(item => {
-    const div = document.createElement("div");
-    div.innerHTML = `
-      <div>
-        <strong>${item.name}</strong> - ${item.plate}
-      </div>
-    `;
-    container.appendChild(div);
-  });
+  alert("บันทึกสำเร็จ");
+  loadHistory();
+  showTab('history');
 }
 
-
-// ===== RENDER HISTORY =====
-function renderHistory(data) {
-  const list = document.getElementById("historyList");
-
-  // ไม่มีข้อมูล
-  if (!data || data.length === 0) {
-    list.innerHTML =
-      '<div style="text-align:center;padding:40px;color:#888;font-size:16px;">ยังไม่มีประวัติบันทึกข้อมูล</div>';
-    return;
-  }
-
-  let html = "";
-
-  data.forEach(item => {
-    const carImg = item.carImg
-      ? `<img src="${item.carImg}" 
-             style="width:120px;height:90px;object-fit:cover;border-radius:8px;border:1px solid #ddd;">`
-      : `<div style="width:120px;height:90px;background:#f0f0f0;
-                    display:flex;align-items:center;justify-content:center;
-                    border-radius:8px;color:#999;font-size:12px;">
-           ไม่มีรูป
-         </div>`;
-
-    const billButton = item.billImg
-      ? `<button onclick="window.open('${item.billImg}','_blank')" 
-                style="background:#17a2b8;">ดูบิล</button>`
-      : "";
-
-    html += `
-      <div style="
-        display:flex;
-        gap:15px;
-        background:#ffffff;
-        padding:15px;
-        margin-bottom:15px;
-        border-radius:12px;
-        box-shadow:0 3px 8px rgba(0,0,0,0.08);
-        align-items:center;
-      ">
-
-        <div>${carImg}</div>
-
-        <div style="flex:1;">
-          <div style="font-weight:bold;font-size:16px;">
-            ${item.name || '-'}
-          </div>
-
-          <div style="font-size:14px;color:#555;">
-            📅 ${item.date || '-'}
-          </div>
-
-          <div style="font-size:14px;color:#555;">
-            🚗 ${item.brand || ''} ${item.model || ''} (${item.year || ''})
-          </div>
-
-          <div style="font-size:14px;color:#555;">
-            🏷 ทะเบียน: ${item.plate || '-'}
-          </div>
-
-          <div style="font-size:14px;color:#28a745;font-weight:bold;margin-top:4px;">
-            💰 ${item.price || 0} บาท
-          </div>
-
-          <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
-            <button onclick="editData('${item.id}')"
-                    style="background:#ffc107;">แก้ไข</button>
-
-            <button onclick="deleteData('${item.id}')"
-                    style="background:#dc3545;color:#fff;">ลบ</button>
-
-            ${billButton}
-          </div>
-        </div>
-      </div>
-    `;
+window.loadHistory = async function(){
+  const snap = await getDocs(collection(db,"jobs"));
+  let html="";
+  snap.forEach(d=>{
+    const item=d.data();
+    html+=`<div style='background:#fff;padding:12px;margin-bottom:10px;border-radius:12px;'>
+      <b>${item.name||'-'}</b><br>
+      📅 ${item.date||'-'}<br>
+      🚗 ${item.brand||''} ${item.model||''}<br>
+      🏷 ${item.plate||'-'}<br>
+      💰 ${item.price||0} บาท<br>
+      <button onclick="editData('${d.id}')">แก้ไข</button>
+      <button onclick="deleteData('${d.id}')">ลบ</button>
+    </div>`;
   });
-
-  list.innerHTML = html;
+  historyList.innerHTML=html||"ยังไม่มีข้อมูล";
 }
 
-// ===== SAVE FORM =====
-async function saveData() {
+window.deleteData = async function(id){
+  if(!confirm("ยืนยันลบ?"))return;
+  await deleteDoc(doc(db,"jobs",id));
+  loadHistory();
+}
 
-  const params = new URLSearchParams();
-
-  const name = document.getElementById("name").value;
-  const date = document.getElementById("date").value;
-  const plate = document.getElementById("plate").value;
-  const phone = document.getElementById("phone").value;
-  const brand = document.getElementById("brand").value;
-  const model = document.getElementById("model").value;
-  const year = document.getElementById("year").value;
-  const price = document.getElementById("price").value.replace(/,/g,'');
-
-  params.append("mode", window.editingId ? "update" : "save");
-  if (window.editingId) params.append("id", window.editingId);
-
-  params.append("date", date);
-  params.append("name", name);
-  params.append("plate", plate);
-  params.append("phone", phone);
-  params.append("brand", brand);
-  params.append("model", model);
-  params.append("year", year);
-  params.append("price", price);
-
-  params.append("carImg", carPreview.src || "");
-  params.append("billImg", billPreview.src || "");
-
-  try {
-const response = await fetch(SHEET_API_URL, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/x-www-form-urlencoded"
-  },
-  body: params.toString()
-});
-
-    const result = await response.json();
-
-    if (result.status === "success") {
-      alert("บันทึกสำเร็จ");
-      window.editingId = null;
-      loadHistory();
-      showTab('history');
-    } else {
-      alert("บันทึกไม่สำเร็จ");
+window.editData = async function(id){
+  const snap = await getDocs(collection(db,"jobs"));
+  snap.forEach(d=>{
+    if(d.id===id){
+      const i=d.data();
+      name.value=i.name;
+      date.value=i.date;
+      plate.value=i.plate;
+      phone.value=i.phone;
+      brand.value=i.brand;
+      model.value=i.model;
+      year.value=i.year;
+      price.value=i.price;
+      editingId=id;
+      showTab('form');
     }
-
-  } catch (err) {
-    console.error(err);
-    alert("เชื่อมต่อไม่สำเร็จ");
-  }
+  });
 }
-
-
-
-
-// ===== UTIL =====
-function formatMoney(val) {
-  if (!val) return '0';
-  return Number(val).toLocaleString('th-TH');
-}
-
-</script>
-    </div>
-    </div>
-  </div>
-
-<script>
-// tab control (FIX)
-document.getElementById('tabForm').onclick = () => showTab('form');
-document.getElementById('tabHistory').onclick = () => showTab('history');
 
 function showTab(tab){
-  const indicator = document.getElementById('tabIndicator');
-  document.getElementById('formTab').style.display = tab==='form'?'block':'none';
-  document.getElementById('historyTab').style.display = tab==='history'?'block':'none';
-  document.getElementById('tabForm').classList.remove('active');
-  document.getElementById('tabHistory').classList.remove('active');
-
+  formTab.style.display=tab==='form'?'block':'none';
+  historyTab.style.display=tab==='history'?'block':'none';
+  tabForm.classList.remove('active');
+  tabHistory.classList.remove('active');
   if(tab==='form'){
-    document.getElementById('tabForm').classList.add('active');
-    indicator.style.transform = 'translateX(0%)';
+    tabForm.classList.add('active');
+    tabIndicator.style.transform='translateX(0%)';
   }else{
-    document.getElementById('tabHistory').classList.add('active');
-    indicator.style.transform = 'translateX(100%)';
+    tabHistory.classList.add('active');
+    tabIndicator.style.transform='translateX(100%)';
     loadHistory();
   }
 }
 
-// ===== money format =====
-const priceInput = document.getElementById('price');
-priceInput.addEventListener('input',()=>{
-  let v = priceInput.value.replace(/[^0-9]/g,'');
-  priceInput.value = v ? Number(v).toLocaleString('en-US') : '';
-});
+tabForm.onclick=()=>showTab('form');
+tabHistory.onclick=()=>showTab('history');
 
-function getPriceNumber(){
-  return Number(priceInput.value.replace(/,/g,''))||0;
-}
-
-// ===== brand & model real data (Thailand) =====
-const brandModelMap = {
-  "Toyota": ["Vios","Yaris","Altis","Corolla Cross","Camry","Revo","Fortuner","Avanza","Innova","Hilux Champ"],
-  "Honda": ["City","Jazz","Civic","Accord","HR-V","CR-V","BR-V","Mobilio"],
-  "Isuzu": ["D-Max","MU-X"],
-  "Mazda": ["Mazda 2","Mazda 3","CX-3","CX-30","CX-5","CX-8","BT-50"],
-  "Nissan": ["Almera","March","Note","Sylphy","Teana","Navara","Terra"],
-  "Mitsubishi": ["Attrage","Mirage","Lancer","Xpander","Pajero Sport","Triton"],
-  "Ford": ["Ranger","Everest","EcoSport"],
-  "MG": ["MG3","MG4","MG5","MG ZS","MG HS","MG Extender"],
-  "BYD": ["Dolphin","Atto 3","Seal"],
-  "Suzuki": ["Celerio","Swift","Ciaz","Ertiga","Carry"],
-  "BMW": ["Series 3","Series 5","X1","X3","X5"],
-  "Mercedes-Benz": ["A-Class","C-Class","E-Class","GLA","GLC"]
-};
-
-const brandSelect = document.getElementById('brand');
-const modelSelect = document.getElementById('model');
-
-brandSelect.addEventListener('change',()=>{
-  const brand = brandSelect.value;
-  modelSelect.innerHTML = '<option value="">เลือกรุ่นรถ</option>';
-  if(!brandModelMap[brand]) return;
-  brandModelMap[brand].forEach(m=>{
-    const opt = document.createElement('option');
-    opt.value = m;
-    opt.textContent = m;
-    modelSelect.appendChild(opt);
-  });
-});
-
-// ===== ฟังก์ชันลบ =====
-function deleteData(id) {
-  if (!confirm("ยืนยันการลบ?")) return;
-
-  fetch(SHEET_API_URL + "?action=delete&id=" + id)
-    .then(res => res.json())
-    .then(res => {
-      if (res.status === "success") {
-        loadHistory();
-      }
-    })
-    .catch(err => {
-      console.error(err);
-      alert("ลบไม่สำเร็จ");
-    });
-}
-// ===== ฟังก์ชันแก้ไข =====  
-function editData(id) {
-  fetch(SHEET_API_URL)
-    .then(res => res.json())
-    .then(res => {
-      if (!res.data) return;
-      const item = res.data.find(d => d.id === id);
-      if (!item) return;
-
-      document.getElementById('date').value = item.date;
-      document.getElementById('name').value = item.name;
-      document.getElementById('plate').value = item.plate;
-      document.getElementById('phone').value = item.phone;
-      document.getElementById('brand').value = item.brand;
-
-// trigger change เพื่อโหลดรุ่น
-brandSelect.dispatchEvent(new Event('change'));
-
-setTimeout(()=>{
-  document.getElementById('model').value = item.model;
-}, 100);
-      
-      document.getElementById('year').value = item.year;
-      document.getElementById('price').value = item.price;
-
-      window.editingId = id;
-
-      showTab('form');
-    });
-}
-
- function previewImage(input, id){
-  const img = document.getElementById(id);
-
-  if(input.files && input.files[0]){
-
-    const reader = new FileReader();
-
-    reader.onload = function(e){
-
-      const image = new Image();
-      image.src = e.target.result;
-
-      image.onload = function(){
-
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-
-        const MAX_WIDTH = 600; // ปรับได้
-        const scale = MAX_WIDTH / image.width;
-
-        canvas.width = MAX_WIDTH;
-        canvas.height = image.height * scale;
-
-        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-
-        // บีบอัดคุณภาพ 70%
-        const compressed = canvas.toDataURL('image/jpeg', 0.7);
-
-        img.src = compressed;
-        img.style.display = 'block';
-      };
-    };
-
-    reader.readAsDataURL(input.files[0]);
-  }
-} 
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
