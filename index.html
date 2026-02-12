@@ -259,56 +259,31 @@ function renderHistory(data) {
 }
 
 // ===== SAVE FORM =====
-function saveData() {
+async function saveData() {
 
-  const formData = new FormData();
-  const carImgSrc = document.getElementById('carPreview').src;
-  const billImgSrc = document.getElementById('billPreview').src;
+  const params = new URLSearchParams();
 
-  
-formData.append("carImg",
-  carImgSrc && carImgSrc.startsWith("data:image")
-    ? carImgSrc
-    : ""
-);
+  params.append("mode", "save");
+  params.append("date", date.value);
+  params.append("name", name.value);
+  params.append("plate", plate.value);
+  params.append("phone", phone.value);
+  params.append("brand", brand.value);
+  params.append("model", model.value);
+  params.append("year", year.value);
+  params.append("price", price.value);
 
-formData.append("billImg",
-  billImgSrc && billImgSrc.startsWith("data:image")
-    ? billImgSrc
-    : ""
-);
+  params.append("carImg", carPreview.src);
+  params.append("billImg", billPreview.src);
 
-  formData.append("mode", "save");
-  formData.append("name", document.getElementById('name').value);
-  formData.append("date", document.getElementById('date').value);
-  formData.append("plate", document.getElementById('plate').value);
-  formData.append("phone", document.getElementById('phone').value);
-  formData.append("brand", document.getElementById('brand').value);
-  formData.append("model", document.getElementById('model').value);
-  formData.append("year", document.getElementById('year').value);
-  formData.append("price", getPriceNumber());
+  const response = await fetch(SHEET_API_URL + "?" + params.toString());
 
+  const result = await response.json();
 
-
-  fetch(SHEET_API_URL, {
-    method: "POST",
-    body: formData
-  })
-  .then(res => res.json())
-  .then(res => {
-    if (res.status === "success") {
-      alert("บันทึกเรียบร้อย");
-      loadHistory();
-    } else {
-      alert("เกิดข้อผิดพลาด");
-    }
-  })
-  .catch(err => {
-    console.error(err);
-    alert("บันทึกไม่สำเร็จ");
-  });
+  if (result.status === "success") {
+    alert("บันทึกสำเร็จ");
+  }
 }
-
 
 
 
@@ -473,6 +448,7 @@ setTimeout(()=>{
 </script>
 </body>
 </html>
+
 
 
 
