@@ -264,37 +264,56 @@ async function saveData() {
 
   const params = new URLSearchParams();
 
+  const name = document.getElementById("name").value;
+  const date = document.getElementById("date").value;
+  const plate = document.getElementById("plate").value;
+  const phone = document.getElementById("phone").value;
+  const brand = document.getElementById("brand").value;
+  const model = document.getElementById("model").value;
+  const year = document.getElementById("year").value;
+  const price = document.getElementById("price").value.replace(/,/g,'');
+
   params.append("mode", window.editingId ? "update" : "save");
   if (window.editingId) params.append("id", window.editingId);
 
-  params.append("date", date.value);
-  params.append("name", name.value);
-  params.append("plate", plate.value);
-  params.append("phone", phone.value);
-  params.append("brand", brand.value);
-  params.append("model", model.value);
-  params.append("year", year.value);
-  params.append("price", price.value.replace(/,/g,''));
+  params.append("date", date);
+  params.append("name", name);
+  params.append("plate", plate);
+  params.append("phone", phone);
+  params.append("brand", brand);
+  params.append("model", model);
+  params.append("year", year);
+  params.append("price", price);
 
   params.append("carImg", carPreview.src || "");
   params.append("billImg", billPreview.src || "");
 
-  const response = await fetch(SHEET_API_URL, {
-    method: "POST",
-    body: params
-  });
+  try {
+const response = await fetch(SHEET_API_URL, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/x-www-form-urlencoded"
+  },
+  body: params.toString()
+});
 
-  const result = await response.json();
+    const result = await response.json();
 
-  if (result.status === "success") {
-    alert("บันทึกสำเร็จ");
-    window.editingId = null;
-    loadHistory();
-    showTab('history');
-  } else {
-    alert("บันทึกไม่สำเร็จ");
+    if (result.status === "success") {
+      alert("บันทึกสำเร็จ");
+      window.editingId = null;
+      loadHistory();
+      showTab('history');
+    } else {
+      alert("บันทึกไม่สำเร็จ");
+    }
+
+  } catch (err) {
+    console.error(err);
+    alert("เชื่อมต่อไม่สำเร็จ");
   }
 }
+
 
 
 
@@ -459,6 +478,7 @@ setTimeout(()=>{
 </script>
 </body>
 </html>
+
 
 
 
