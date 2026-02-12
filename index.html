@@ -272,9 +272,10 @@ function saveData() {
     params.append("billImg", billPreview.src);
   }
 
-fetch(SHEET_API_URL, {
-  method: "POST",
-  body: formData
+  fetch(SHEET_API_URL, {
+    method: "POST",
+    body: params
+  })
       if (res.status === "success") {
         alert("บันทึกเรียบร้อย");
         window.editingId = null;
@@ -453,6 +454,7 @@ setTimeout(()=>{
 </script>
 </body>
 </html>
+
 
 
 
