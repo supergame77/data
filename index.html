@@ -263,12 +263,11 @@ function saveData() {
   params.append("year", document.getElementById('year').value);
   params.append("price", getPriceNumber());
 
-  // รูป (เฉพาะที่เป็น base64)
-  if (carPreview.src && carPreview.src.startsWith("data:image")) {
+  if (carPreview && carPreview.src.startsWith("data:image")) {
     params.append("carImg", carPreview.src);
   }
 
-  if (billPreview.src && billPreview.src.startsWith("data:image")) {
+  if (billPreview && billPreview.src.startsWith("data:image")) {
     params.append("billImg", billPreview.src);
   }
 
@@ -276,21 +275,24 @@ function saveData() {
     method: "POST",
     body: params
   })
-      if (res.status === "success") {
-        alert("บันทึกเรียบร้อย");
-        window.editingId = null;
-        loadHistory();
-        showTab('history');
-      } else {
-        alert("บันทึกไม่สำเร็จ");
-        console.log(res);
-      }
-    })
-    .catch(err => {
-      alert("เชื่อมต่อไม่สำเร็จ");
-      console.error(err);
-    });
+  .then(response => response.json())
+  .then(result => {
+    if (result.status === "success") {
+      alert("บันทึกเรียบร้อย");
+      window.editingId = null;
+      loadHistory();
+      showTab('history');
+    } else {
+      alert("บันทึกไม่สำเร็จ");
+      console.log(result);
+    }
+  })
+  .catch(error => {
+    alert("เชื่อมต่อไม่สำเร็จ");
+    console.error(error);
+  });
 }
+
 
 
 // ===== UTIL =====
@@ -454,6 +456,7 @@ setTimeout(()=>{
 </script>
 </body>
 </html>
+
 
 
 
