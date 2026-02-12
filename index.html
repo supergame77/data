@@ -135,7 +135,7 @@ textarea{min-height:70px;resize:none}
 
 <script>
 // ===== CONFIG =====
-const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbxX7AJcVUboLS1T12-VY716dOOVdpaqAucbYJY1BUkvkh-DsFzl-d9L722RAHTQb9Fo/exec';
+const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbxDVLcdc8a6UZMnNGwhPnbkRQviPK1ZpuNUqYhHk2GHnlsz09F-1U54HYs4hy2Evyk7/exec';
 
 
 // ===== HISTORY LOAD =====
@@ -263,7 +263,9 @@ async function saveData() {
 
   const params = new URLSearchParams();
 
-  params.append("mode", "save");
+  params.append("mode", window.editingId ? "update" : "save");
+  if (window.editingId) params.append("id", window.editingId);
+
   params.append("date", date.value);
   params.append("name", name.value);
   params.append("plate", plate.value);
@@ -271,17 +273,25 @@ async function saveData() {
   params.append("brand", brand.value);
   params.append("model", model.value);
   params.append("year", year.value);
-  params.append("price", price.value);
+  params.append("price", price.value.replace(/,/g,''));
 
-  params.append("carImg", carPreview.src);
-  params.append("billImg", billPreview.src);
+  params.append("carImg", carPreview.src || "");
+  params.append("billImg", billPreview.src || "");
 
-  const response = await fetch(SHEET_API_URL + "?" + params.toString());
+  const response = await fetch(SHEET_API_URL, {
+    method: "POST",
+    body: params
+  });
 
   const result = await response.json();
 
   if (result.status === "success") {
     alert("บันทึกสำเร็จ");
+    window.editingId = null;
+    loadHistory();
+    showTab('history');
+  } else {
+    alert("บันทึกไม่สำเร็จ");
   }
 }
 
@@ -448,6 +458,7 @@ setTimeout(()=>{
 </script>
 </body>
 </html>
+
 
 
 
