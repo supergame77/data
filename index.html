@@ -135,7 +135,7 @@ textarea{min-height:70px;resize:none}
 
 <script>
 // ===== CONFIG =====
-const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbylN8l_LdAmaTjgcmi7CRMISX2on6ZJGUxh-hJPyPJDbMqdbMP0j3753Dd09f3cLK38/exec';
+const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbxHwyMt-aotPftnDtp4BIFr28bY5BTpwJmV-imaPkp-l8nWwzucBlwNY0KwLjrs3l0A/exec';
 
 
 // ===== HISTORY LOAD =====
@@ -272,9 +272,9 @@ function saveData() {
     params.append("billImg", billPreview.src);
   }
 
-  fetch(SHEET_API_URL + "?" + params.toString())
-    .then(res => res.json())
-    .then(res => {
+fetch(SHEET_API_URL, {
+  method: "POST",
+  body: formData
       if (res.status === "success") {
         alert("บันทึกเรียบร้อย");
         window.editingId = null;
@@ -453,6 +453,7 @@ setTimeout(()=>{
 </script>
 </body>
 </html>
+
 
 
 
