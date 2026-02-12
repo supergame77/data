@@ -262,6 +262,21 @@ function renderHistory(data) {
 function saveData() {
 
   const formData = new FormData();
+  const carImgSrc = document.getElementById('carPreview').src;
+  const billImgSrc = document.getElementById('billPreview').src;
+
+  
+formData.append("carImg",
+  carImgSrc && carImgSrc.startsWith("data:image")
+    ? carImgSrc
+    : ""
+);
+
+formData.append("billImg",
+  billImgSrc && billImgSrc.startsWith("data:image")
+    ? billImgSrc
+    : ""
+);
 
   formData.append("mode", "save");
   formData.append("name", document.getElementById('name').value);
@@ -273,9 +288,7 @@ function saveData() {
   formData.append("year", document.getElementById('year').value);
   formData.append("price", getPriceNumber());
 
-  // 👇 ดึง base64 จาก preview
-  formData.append("carImg", document.getElementById('carPreview').src);
-  formData.append("billImg", document.getElementById('billPreview').src);
+
 
   fetch(SHEET_API_URL, {
     method: "POST",
@@ -460,6 +473,7 @@ setTimeout(()=>{
 </script>
 </body>
 </html>
+
 
 
 
